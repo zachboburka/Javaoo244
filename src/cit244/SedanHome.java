@@ -8,6 +8,7 @@ package cit244;
 import inheritancepractice.CrashTestable;
 import inheritancepractice.DrivingMode;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -51,7 +52,7 @@ public class SedanHome implements CrashTestable, CrashTestExtended {
         }//if
 
         resultList.add("Vehicle Year : " + modelYear + "\n");
-        return modelYear;
+        return score;
     }
 
     @Override
@@ -74,7 +75,7 @@ public class SedanHome implements CrashTestable, CrashTestExtended {
         }//if
 
         resultList.add("Vehicle Weight in pounds : " + weight + "\n");
-        return weight;
+        return score;
     }
 
     @Override
@@ -103,6 +104,30 @@ public class SedanHome implements CrashTestable, CrashTestExtended {
     }//DidAirBagsDeploy
 
     @Override
+    public boolean DidAirBagsDeployRandom() {
+        boolean deployAirBags = false;
+
+        Random randSpeed = new Random();
+
+        // Generate random integers in range 0 to 999 
+        int rand_speed = randSpeed.nextInt(60);
+
+        //if vehicle speed is over 14mph, airbags will deploy.
+        if (rand_speed >= 14) {
+            deployAirBags = true;
+            resultList.add("Vehicle Speed upon impact : " + rand_speed + "\n");
+            resultList.add("Airbags deployed." + "\n");
+
+        } else {
+            deployAirBags = false;
+            resultList.add("Vehicle Speed upon impact : " + rand_speed + "\n");
+            resultList.add("Airbags did not deploy." + "\n");
+        }//if
+
+        return deployAirBags;
+    }
+
+    @Override
     public String VehicleMake() {
         String make;
         Scanner scanMake = new Scanner(System.in);
@@ -128,15 +153,16 @@ public class SedanHome implements CrashTestable, CrashTestExtended {
 
     @Override
     public void DrivingModeArray() {
-    String[] drivingModes = new String[4];
-    
-    drivingModes[0] = "0 : Eco";
-    drivingModes[1] = "1 : Sport";
-    drivingModes[2] = "2 : Snow";
-    drivingModes[3] = "3 : Climbing";
-    
-    //for loop
-        for (int i = 0; i <= 3; i = i + 1) {
+        String[] drivingModes = new String[5];
+
+        drivingModes[0] = "0 : Eco";
+        drivingModes[1] = "1 : Sport";
+        drivingModes[2] = "2 : Snow";
+        drivingModes[3] = "3 : Climbing";
+        drivingModes[4] = "4 : N/A";
+
+        //for loop
+        for (int i = 0; i <= 4; i = i + 1) {
             String drivingModeSelected = drivingModes[i];
             System.out.println(drivingModeSelected);
         }//end for
@@ -154,7 +180,6 @@ public class SedanHome implements CrashTestable, CrashTestExtended {
         resultList.add(drivingModes[drivingModePicked]);
     }//DrivingModeArray()
 
-    
     @Override
     public double getFrontBumberHeight() {
         double frontBumperHeight;
@@ -175,16 +200,16 @@ public class SedanHome implements CrashTestable, CrashTestExtended {
     public boolean driverAirbagPresent() {
         boolean airBagPresent = true;
         Scanner scanAirBag = new Scanner(System.in);
-        
+
         System.out.println("Does the vehicle have airbags? Enter 'true' if yes, Enter 'false' if no.");
         airBagPresent = scanAirBag.nextBoolean();
-        
-        if (airBagPresent == true ) {
+
+        if (airBagPresent == true) {
             score = score + 1;
         } else {
             score = score + 0;
         }//if
-        
+
         return airBagPresent;
     }//driverAirBagPresent
 
@@ -196,30 +221,29 @@ public class SedanHome implements CrashTestable, CrashTestExtended {
         System.out.println("Enter Wheelbase Length in inches : ");
         lengthOfWheelBase = scanlengthWB.nextDouble();
 
-        return lengthOfWheelBase;    
+        return lengthOfWheelBase;
     }//getLengthOfWheelBase
 
     @Override
     public double getFrontWeightLevelWeight() {
-    double FrontWeightLevelWeight;
+        double FrontWeightLevelWeight;
         Scanner scanFWL = new Scanner(System.in);
 
         System.out.println("Enter Vehicle Front Weight When Level in pounds : ");
         FrontWeightLevelWeight = scanFWL.nextDouble();
 
-        return FrontWeightLevelWeight;    
+        return FrontWeightLevelWeight;
     }//getFrontWeightLevel
-
 
     @Override
     public double getFrontWeightWhenRaised() {
-    double FrontWeightWhenRaised;
+        double FrontWeightWhenRaised;
         Scanner scanFWR = new Scanner(System.in);
 
         System.out.println("Enter Vehicle Front Weight When Rasied in inches : ");
         FrontWeightWhenRaised = scanFWR.nextDouble();
 
-        return FrontWeightWhenRaised;    
+        return FrontWeightWhenRaised;
     }//getFrontWeightWhenRaised
 
 }

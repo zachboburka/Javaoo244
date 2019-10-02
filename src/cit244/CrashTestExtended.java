@@ -23,6 +23,9 @@ public interface CrashTestExtended extends CrashTestable{
         
     public void DrivingModeArray();
     
+    public boolean DidAirBagsDeployRandom();
+    
+    
     
     
     

@@ -20,7 +20,7 @@ public class VehicleLandHome extends SedanHome{
         impala.VehicleMake();
         impala.VehicleModel();
         impala.getVehicleYear();
-        impala.DidAirBagsDeploy();
+        impala.DidAirBagsDeployRandom();
         impala.DrivingModeArray();
         impala.CrashTestResults();
         
