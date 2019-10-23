@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.Scanner;
+import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 import javax.xml.bind.DatatypeConverter;
 
@@ -37,13 +38,18 @@ public class HashingGUI extends HashingController {
         JFrame frame = new JFrame();
         JButton buttonOutput;
         JButton buttonInput;
+        JButton buttonRead;
+        JButton buttonHash;
         JLabel label;
         JLabel label2;
         JTextArea textArea;
+        JFileChooser fileChooser;
 
         //button
         buttonOutput = new JButton("Create File");
         buttonInput = new JButton("Read File");
+        buttonRead = new JButton("Choose File");
+        buttonHash = new JButton("Read Hash");
 
         //label
         label = new JLabel("Enter text to create a file.", JLabel.CENTER);
@@ -63,6 +69,9 @@ public class HashingGUI extends HashingController {
         //Initialize textArea
         textArea = new JTextArea(5, 20);
 
+        //Initialize fileChooser
+        fileChooser = new JFileChooser();
+
         //add button and textfield to panel
         p.add(label);
         p.add(textfieldOutput);
@@ -72,6 +81,8 @@ public class HashingGUI extends HashingController {
         p.add(textfieldInput);
         p.add(buttonInput);
         p.add(textArea);
+        p.add(buttonRead);
+        p.add(buttonHash);
 
         buttonOutput.addActionListener(e1 -> {
             try {
@@ -84,6 +95,7 @@ public class HashingGUI extends HashingController {
         });
 
         buttonInput.addActionListener(e1 -> {
+            
             java.io.File tyson = new File(textfieldInput.getText());
             try {
                 Scanner scanFile = new Scanner(tyson);
@@ -102,6 +114,55 @@ public class HashingGUI extends HashingController {
                 System.out.println(ex);
             }
         });//actionListener
+
+        
+       
+       buttonRead.addActionListener(e1 -> {
+           try {
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            //get choosen file
+            java.io.File chosenFile = fileChooser.getSelectedFile();
+
+            //Create Scanner
+            Scanner scanFile = new Scanner(chosenFile);
+
+            //ReadText from file
+            while (scanFile.hasNext()) {
+                textArea.setText(scanFile.nextLine());
+            }//while
+
+            //close file
+            scanFile.close();
+
+        } else {
+            System.out.println("No File Selected");
+        }//else
+           } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        });//actionListener
+       
+       buttonHash.addActionListener(el -> {
+           try {
+               if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            //get choosen file
+            java.io.File chosenFile = fileChooser.getSelectedFile();
+
+            //Create Scanner
+            Scanner scanFile = new Scanner(chosenFile);
+            
+            
+            
+            //close file
+            scanFile.close();
+            } else {
+            System.out.println("No File Selected");
+            }//else
+           }//try 
+           catch (Exception ex) {
+                System.out.println(ex);
+            }
+       });//buttonHash
 
         //frame settings
         frame.setTitle("File Maker");
