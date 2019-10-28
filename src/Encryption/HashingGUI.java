@@ -5,6 +5,7 @@
  */
 package Encryption;
 
+import static com.sun.java.accessibility.util.AWTEventMonitor.addActionListener;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,22 +34,22 @@ public class HashingGUI extends HashingController {
     Font buttonFont = new Font("Arial", Font.BOLD, 14);
     JTextField textfieldOutput;
     JTextField textfieldInput;
+    JTextArea textArea;
+    JButton buttonOutput;
+    JButton buttonInput;
+    JButton buttonRead;
+    JButton buttonHash;
+    JLabel label;
+    JLabel label2;
+    JFileChooser fileChooser;
 
-    HashingGUI() throws IOException {
+    public HashingGUI() throws IOException {
         JFrame frame = new JFrame();
-        JButton buttonOutput;
-        JButton buttonInput;
-        JButton buttonRead;
-        JButton buttonHash;
-        JLabel label;
-        JLabel label2;
-        JTextArea textArea;
-        JFileChooser fileChooser;
 
         //button
         buttonOutput = new JButton("Create File");
         buttonInput = new JButton("Read File");
-        buttonRead = new JButton("Choose File");
+        buttonRead = new JButton("Read Contents");
         buttonHash = new JButton("Read Hash");
 
         //label
@@ -84,18 +85,78 @@ public class HashingGUI extends HashingController {
         p.add(buttonRead);
         p.add(buttonHash);
 
-        buttonOutput.addActionListener(e1 -> {
+        //frame settings
+        frame.setTitle("File Maker");
+        frame.setSize(1000, 500);
+        frame.getContentPane().add(p);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        buttonRead.addActionListener(new FileReaderListener());
+        buttonHash.addActionListener(new FileHashListener());
+        buttonInput.addActionListener(new FileInputListener());
+        buttonOutput.addActionListener(new FilePrintListener());
+
+    }//gui
+
+    //Read file contents via textArea
+    class FileReaderListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent ev) {
             try {
-                BufferedWriter bwriter1 = new BufferedWriter(new FileWriter("pleaseWork.txt"));
-                bwriter1.write(textfieldOutput.getText());
-                bwriter1.close();
+                if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    //get choosen file
+                    java.io.File chosenFile = fileChooser.getSelectedFile();
+
+                    //Create Scanner
+                    Scanner scanFile = new Scanner(chosenFile);
+
+                    //ReadText from file
+                    while (scanFile.hasNext()) {
+                        textArea.setText(scanFile.nextLine());
+                    }//while
+
+                    //close file
+                    scanFile.close();
+
+                } else {
+                    System.out.println("No File Selected");
+                }//else
             } catch (Exception ex) {
                 System.out.println(ex);
             }
-        });
+        }
+    }//actionListener
 
-        buttonInput.addActionListener(e1 -> {
-            
+    //Choose File To Be Hashed
+    class FileHashListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            try {
+                if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    //get choosen file
+                    java.io.File chosenFile = fileChooser.getSelectedFile();
+
+                    //Create Scanner
+                    Scanner scanFile = new Scanner(chosenFile);
+
+                    //close file
+                    scanFile.close();
+                } else {
+                    System.out.println("No File Selected");
+                }//else
+            }//try 
+            catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+    }//buttonHash
+
+    //Create/Edit Text File
+    class FileInputListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent ev) {
             java.io.File tyson = new File(textfieldInput.getText());
             try {
                 Scanner scanFile = new Scanner(tyson);
@@ -113,65 +174,21 @@ public class HashingGUI extends HashingController {
             } catch (Exception ex) {
                 System.out.println(ex);
             }
-        });//actionListener
+        }
+    }//actionListener
 
-        
-       
-       buttonRead.addActionListener(e1 -> {
-           try {
-        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            //get choosen file
-            java.io.File chosenFile = fileChooser.getSelectedFile();
-
-            //Create Scanner
-            Scanner scanFile = new Scanner(chosenFile);
-
-            //ReadText from file
-            while (scanFile.hasNext()) {
-                textArea.setText(scanFile.nextLine());
-            }//while
-
-            //close file
-            scanFile.close();
-
-        } else {
-            System.out.println("No File Selected");
-        }//else
-           } catch (Exception ex) {
+    //Print File Contents
+    class FilePrintListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent ev) {
+            try {
+                BufferedWriter bwriter1 = new BufferedWriter(new FileWriter("pleaseWork.txt"));
+                bwriter1.write(textfieldOutput.getText());
+                bwriter1.close();
+            } catch (Exception ex) {
                 System.out.println(ex);
             }
-        });//actionListener
-       
-       buttonHash.addActionListener(el -> {
-           try {
-               if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            //get choosen file
-            java.io.File chosenFile = fileChooser.getSelectedFile();
-
-            //Create Scanner
-            Scanner scanFile = new Scanner(chosenFile);
-            
-            
-            
-            //close file
-            scanFile.close();
-            } else {
-            System.out.println("No File Selected");
-            }//else
-           }//try 
-           catch (Exception ex) {
-                System.out.println(ex);
-            }
-       });//buttonHash
-
-        //frame settings
-        frame.setTitle("File Maker");
-        frame.setSize(1000, 500);
-        frame.getContentPane().add(p);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-    }//gui
+        }//actionPerformed
+    }
 
 }//class
