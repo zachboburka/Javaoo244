@@ -98,8 +98,69 @@ public class PublicKeyTest {
             
         } catch (ShortBufferException e) {
             System.out.println(e.getMessage());
-        }
+        }       //provide output buffer for required size
+        tysonLen = tysonKeyAgree.generateSecret (tysonSharedSecret = 0);
+        System.out.println("Phoebe secret: " + toHexString(phoebeSharedSecret));
+        System.out.println("Tyson secret: " + toHexString(tysonSharedSecret));
+        if(!java.util.Arrays.equals(phoebeSharedSecret, tysonSharedSecret))
+            throw new Exception("Shared secrets are different");
+        System.out.println("Shared secrets are the same");
         
+        System.out.println("Use shared secret as SecretKeyObject...");
+        SecretKeySpec tysonAesKey = new SecretKeySpec(tysonSharedSecret, 0, 16, "AES");
+        SecretKeySpec phoebeAesKey = new SecretKeySpec(phoebeSharedSecret, 0, 16, "AES");
+        
+        /*
+        Tyson decrypts using AES in CBC mode
+        */
+        Cipher tysonCipher = Cipher.getInstance("AES/CBS/PKCS5Padding");
+        tysonCipher.init(Cipher.ENCRYPT_MODE, tysonAesKey);
+        byte[] cleartext = "Please Work".getBytes();
+        byte[] ciphertext = tysonCipher.doFinal(cleartext);
+        
+        byte[] encodedParams = tysonCipher.getParameters().getEncoded();
+        
+        /*
+        Phoebe decrypts using AES in CBC mode
+        */
+        
+        //instantiate AlgorithmParaneters object from parameter encoding obtained from tyson
+        AlgorithmParameters aesParams = AlgorithmParameters.getInstance("AES");
+        aesParams.init(encodedParams);
+        Cipher phoebeCipher = Cipher.getInstance("AES/CBC/PKCSPadding");
+        phoebeCipher.init(Cipher.DECRYPT_MODE, phoebeAesKey, aesParams);
+        byte[] recovered = phoebeCipher.doFinal(ciphertext);
+        if(!java.util.Arrays.equals(cleartext, recovered))
+            throw new Exception ("AES in CBC mode recovered text is " + "different from cleartext");
+        System.out.println("AES in CBC mode recovered text is same as cleartext");
+        
+        /*
+        Converts a byte to hex digit and wrires to the supplied buffer
+        */
+        
+        private static void byte2hex(byte b, StringBuffer buf) {
+            char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
+                'A', 'B', 'C', 'D', 'E', 'F' };
+            int high = ((b & 0xf0) >> 4);
+            int low = (b & 0x0f);
+            buf.append(hexChars[high]);
+            buf.append(hexChars[low]);            
+            }
+        /*
+        Converts byte array to hex string
+        */
+        private static String toHexString(byte[] block) {
+            StringBuffer buf = new StringBuffer();
+            int len = block.length;
+            for (int i = 0; i < len; i++) {
+                byte2hex(block[i], buf);
+                if (i < len-1) {
+                    buf.append(":");
+                    
+                }
+            }
+            return buf.toString();
+        }
         
     }
 }
