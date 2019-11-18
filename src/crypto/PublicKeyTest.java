@@ -89,6 +89,8 @@ public class PublicKeyTest {
         agreement protocol.
         both generate the same shared secret.                    
         */
+        System.out.println("TYSON: Execute PHASE1 ...");
+        tysonKeyAgree.doPhase(phoebePubKey, true);
         
         try {
             byte[] phoebeSharedSecret = phoebeKeyAgree.generateSecret();
