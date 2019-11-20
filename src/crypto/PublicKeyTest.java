@@ -14,6 +14,8 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 import javax.crypto.interfaces.*;
 import com.sun.crypto.provider.SunJCE;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -21,56 +23,90 @@ import com.sun.crypto.provider.SunJCE;
  * @author zachary.boburka
  */
 public class PublicKeyTest {
+    //member variables
+    
+    
     private PublicKeyTest() {}
-    public static void main(String argv[]) throws Exception {
+    
+    public static KeyPair generateKeypair1(){
+         KeyPair phoebeKeyPair = null;
         
-        /*
-        * Phoebe creates her own DH key pair with 2048-it key size
-        */
-        
-        System.out.println("PHOEBE: Generate DH keypair ...");
-        KeyPairGenerator phoebeKeyPairGen = KeyPairGenerator.getInstance("DH");
-        phoebeKeyPairGen.initialize(2048);
-        KeyPair phoebeKeyPair = phoebeKeyPairGen.genKeyPair();
-        
-        //Phoebe creates and initializes her DH KeyAgreement object
-        System.out.println("PHOEBE: Initialization ...");
-        KeyAgreement phoebeKeyAgree = KeyAgreement.getInstance("DH");
-        phoebeKeyAgree.init(phoebeKeyPair.getPrivate());
-        
+        try {
+            /*
+            * Phoebe creates her own DH key pair with 2048-it key size
+            */
+            
+            System.out.println("PHOEBE: Generate DH keypair ...");
+            KeyPairGenerator phoebeKeyPairGen = KeyPairGenerator.getInstance("DH");
+            phoebeKeyPairGen.initialize(2048);
+            phoebeKeyPair = phoebeKeyPairGen.genKeyPair();
+            
+            //Phoebe creates and initializes her DH KeyAgreement object
+            System.out.println("PHOEBE: Initialization ...");
+            KeyAgreement phoebeKeyAgree = KeyAgreement.getInstance("DH");
+            phoebeKeyAgree.init(phoebeKeyPair.getPrivate());
+            
+            
+        } //generateKeypair
+        catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+            System.out.println(ex);
+        } 
+        return phoebeKeyPair;
+    }
+    public static byte[] encodePubKey(KeyPair kp){
         //Phoebe encodes her public key. and sends it over to Bob.
-        byte[] phoebePubKeyEnc = phoebeKeyPair.getPublic().getEncoded();
+           return kp.getPublic().getEncoded();
+    }
+    
+    
+    public static void instantiateKeypair1(){
         
-        /*
-        * Tyson has recieved Phoebe's public key in encoded format
-        * he instanciates a DH public key from the encoded key material       
-        */
+        try {
+            /*
+            * Tyson has recieved Phoebe's public key in encoded format
+            * he instanciates a DH public key from the encoded key material
+            */
+            
+            KeyFactory tysonKeyFac = KeyFactory.getInstance("DH");
+            X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(phoebePubKeyEnc);
+            
+            PublicKey phoebePubKey = tysonKeyFac.generatePublic(x509KeySpec);
+            
+            /*
+            Tyson gets the Dh parameters associated with Phoebe's public key/.
+            He must use the same perameters when he generates is own keyu pair
+            */
+            DHParameterSpec dhParamFromPhoebePubKey = ((DHPublicKey)phoebePubKey).getParams();
+        } //instantiateKeypair
+        catch (NoSuchAlgorithmException ex) {
+            System.out.println(ex);        }
+    }
+    
+    public static void generateKeypair2(){
+        KeyPair tysonKeyPair = null;
         
-        KeyFactory tysonKeyFac = KeyFactory.getInstance("DH");
-        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(phoebePubKeyEnc);
+        try {
+            //Tyson creates his own DH key pair
+            System.out.println("TYSON: Generate DH keypair ...");
+            KeyPairGenerator tysonKeyPairGen = KeyPairGenerator.getInstance("DH");
+            tysonKeyPairGen.initialize(dhParamFromPhoebePubKey);
+            tysonKeyPairGen.generateKeyPair();
+            
+            //Tyson creates and initializes his DH KeyAgreement object
+            System.out.println("TYSON: Initialization ...");
+            KeyAgreement tysonKeyAgree = KeyAgreement.getInstance("DH");
+            tysonKeyAgree.init(phoebeKeyPair.getPrivate());
+            
+            //Tyson encodes his public key, and sends it over to Phoebe.
+            byte[] tysonPubKeyEnc = tysonKeyPair.getPublic().getEncoded();
+        } //generateKeypair2
+        catch (NoSuchAlgorithmException ex) {
+            System.out.println(ex);
+        }
         
-        PublicKey phoebePubKey = tysonKeyFac.generatePublic(x509KeySpec);
-        
-        /*
-        Tyson gets the Dh parameters associated with Phoebe's public key/.
-        He must use the same perameters when he generates is own keyu pair
-        */
-        DHParameterSpec dhParamFromPhoebePubKey = ((DHPublicKey)phoebePubKey).getParams();
-        
-        //Tyson creates his own DH key pair
-        System.out.println("TYSON: Generate DH keypair ...");
-        KeyPairGenerator tysonKeyPairGen = KeyPairGenerator.getInstance("DH");
-        tysonKeyPairGen.initialize(dhParamFromPhoebePubKey);
-        KeyPair tysonKeyPair = tysonKeyPairGen.generateKeyPair();
-        
-        //Tyson creates and initializes his DH KeyAgreement object
-        System.out.println("TYSON: Initialization ...");
-        KeyAgreement tysonKeyAgree = KeyAgreement.getInstance("DH");
-        tysonKeyAgree.init(phoebeKeyPair.getPrivate());
-        
-        //Tyson encodes his public key, and sends it over to Phoebe.
-        byte[] tysonPubKeyEnc = tysonKeyPair.getPublic().getEncoded();
-        
+    }
+    
+    public static void instantiateKeypair2(){
         /*
         Phoebe uses Tyson's public key for the first(and only) phase
         of her version of the DH protocol.
@@ -84,7 +120,10 @@ public class PublicKeyTest {
         System.out.println("PHOEBE: Execute PHASE1 ...");
         phoebeKeyAgree.doPhase(tysonPubKey, true);
         
-        /* 
+    }//instantiateKeypair2
+    
+    public static void generateSharedSecret(){
+         /* 
         At this stage, both Phoebe and Tyson have completed the DH key
         agreement protocol.
         both generate the same shared secret.                    
@@ -111,7 +150,9 @@ public class PublicKeyTest {
         System.out.println("Use shared secret as SecretKeyObject...");
         SecretKeySpec tysonAesKey = new SecretKeySpec(tysonSharedSecret, 0, 16, "AES");
         SecretKeySpec phoebeAesKey = new SecretKeySpec(phoebeSharedSecret, 0, 16, "AES");
-        
+    }//generateSharedSecret
+    
+    public static void decryptKeypair(){
         /*
         Tyson decrypts using AES in CBC mode
         */
@@ -135,11 +176,11 @@ public class PublicKeyTest {
         if(!java.util.Arrays.equals(cleartext, recovered))
             throw new Exception ("AES in CBC mode recovered text is " + "different from cleartext");
         System.out.println("AES in CBC mode recovered text is same as cleartext");
-        
-        /*
+    }
+    
+    /*
         Converts a byte to hex digit and wrires to the supplied buffer
         */
-        
         private static void byte2hex(byte b, StringBuffer buf) {
             char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
                 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -148,6 +189,7 @@ public class PublicKeyTest {
             buf.append(hexChars[high]);
             buf.append(hexChars[low]);            
             }
+        
         /*
         Converts byte array to hex string
         */
@@ -163,6 +205,10 @@ public class PublicKeyTest {
             }
             return buf.toString();
         }
+    public static void main(String argv[]) throws Exception {
+        generateKeypair1();
         
-    }
-}
+        
+        
+    }//main
+}//class
