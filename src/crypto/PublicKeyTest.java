@@ -24,12 +24,19 @@ import java.util.logging.Logger;
  */
 public class PublicKeyTest {
     //member variables
+    private KeyAgreement phoebeKeyAgree = null;
     
     
     private PublicKeyTest() {}
-    
-    public static KeyPair generateKeypair1(){
-         KeyPair phoebeKeyPair = null;
+        KeyPair phoebeKeyPair = null;
+        KeyPair tysonKeyPair = null;
+        X509EncodedKeySpec phoebePubKeyEnc = null;
+        PublicKey phoebePubKey = null;
+        DHParameterSpec dhParamFromPhoebePubKey = null;
+        
+        
+        
+    public KeyPair generateKeypair1(){
         
         try {
             /*
@@ -59,7 +66,7 @@ public class PublicKeyTest {
     }
     
     
-    public static void instantiateKeypair1(){
+    public DHParameterSpec instantiateKeypair1(){
         
         try {
             /*
@@ -68,37 +75,49 @@ public class PublicKeyTest {
             */
             
             KeyFactory tysonKeyFac = KeyFactory.getInstance("DH");
-            X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(phoebePubKeyEnc);
             
-            PublicKey phoebePubKey = tysonKeyFac.generatePublic(x509KeySpec);
+            
+            try {
+                phoebePubKey = tysonKeyFac.generatePublic(phoebePubKeyEnc);
+            } catch (InvalidKeySpecException ex) {
+                System.out.println(ex);;
+            }
             
             /*
             Tyson gets the Dh parameters associated with Phoebe's public key/.
             He must use the same perameters when he generates is own keyu pair
             */
             DHParameterSpec dhParamFromPhoebePubKey = ((DHPublicKey)phoebePubKey).getParams();
-        } //instantiateKeypair
+        } //instantiateKeypair //instantiateKeypair
         catch (NoSuchAlgorithmException ex) {
-            System.out.println(ex);        }
+            System.out.println(ex);
+        }
+        
+        
+        return dhParamFromPhoebePubKey;
     }
     
-    public static void generateKeypair2(){
-        KeyPair tysonKeyPair = null;
+    public KeyPair generateKeypair2(DHParameterSpec dppk, KeyPair kp){
+        
         
         try {
             //Tyson creates his own DH key pair
             System.out.println("TYSON: Generate DH keypair ...");
             KeyPairGenerator tysonKeyPairGen = KeyPairGenerator.getInstance("DH");
-            tysonKeyPairGen.initialize(dhParamFromPhoebePubKey);
+            try {
+                tysonKeyPairGen.initialize(dppk);
+            
             tysonKeyPairGen.generateKeyPair();
             
             //Tyson creates and initializes his DH KeyAgreement object
             System.out.println("TYSON: Initialization ...");
             KeyAgreement tysonKeyAgree = KeyAgreement.getInstance("DH");
-            tysonKeyAgree.init(phoebeKeyPair.getPrivate());
             
-            //Tyson encodes his public key, and sends it over to Phoebe.
-            byte[] tysonPubKeyEnc = tysonKeyPair.getPublic().getEncoded();
+                tysonKeyAgree.init(kp.getPrivate());
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException ex) {
+                System.out.println(ex);
+            }
+            
         } //generateKeypair2
         catch (NoSuchAlgorithmException ex) {
             System.out.println(ex);
@@ -106,21 +125,31 @@ public class PublicKeyTest {
         
     }
     
-    public static void instantiateKeypair2(){
-        /*
-        Phoebe uses Tyson's public key for the first(and only) phase
-        of her version of the DH protocol.
-        Before she can do so, she has to instantiate a DH public key
-        from Tyson's encoded key material.
-        */
-        
-        KeyFactory phoebeKeyFac = KeyFactory.getInstance("DH");
-        x509KeySpec = new X509EncodedKeySpec(tysonPubKeyEnc);
-        PublicKey tysonPubKey = phoebeKeyFac.generatePublic(x509KeySpec);
-        System.out.println("PHOEBE: Execute PHASE1 ...");
-        phoebeKeyAgree.doPhase(tysonPubKey, true);
-        
-    }//instantiateKeypair2
+    public X509EncodedKeySpec instantiateKeypair2(){
+        try {
+            /*
+            Phoebe uses Tyson's public key for the first(and only) phase
+            of her version of the DH protocol.
+            Before she can do so, she has to instantiate a DH public key
+            from Tyson's encoded key material.
+            */
+            
+            //Tyson encodes his public key, and sends it over to Phoebe.
+            byte[] tysonPubKeyEnc = tysonKeyPair.getPublic().getEncoded();
+            
+            KeyFactory phoebeKeyFac = KeyFactory.getInstance("DH");
+            X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(tysonPubKeyEnc);
+            PublicKey tysonPubKey;
+            tysonPubKey = phoebeKeyFac.generatePublic(x509KeySpec);
+            
+            System.out.println("PHOEBE: Execute PHASE1 ...");
+            phoebeKeyAgree.doPhase(tysonPubKey, true);
+            return x509KeySpec;
+        } //instantiateKeypair2 //instantiateKeypair2
+        catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalStateException ex) {
+            System.out.println(ex);
+        } 
+    }
     
     public static void generateSharedSecret(){
          /* 
