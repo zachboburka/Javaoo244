@@ -54,6 +54,7 @@ public class CenterOfGravityCalc {
         double CHG = 0;
         CHG = ((WB * FWc) / (TW * TanA) );
         
+        
         System.out.println("The Center of Gravity of your vehicle is : " + CHG);
         
         
