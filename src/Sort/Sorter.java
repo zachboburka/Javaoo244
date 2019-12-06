@@ -17,23 +17,29 @@ public class Sorter {
     
     
     //bubbleSort Method
-    bubbleSort(int[] arrToSort){
-        
-        
-        
-        return sortedValue;        
+    void bubbleSort(int[] sortList){
+        int n = sortList.length;
+        for  (int i = 0; i < n-1; i++)
+            for (int j = 0; j < n-i-1; j++)
+                if (sortList[j] > sortList[j+1])
+                {
+                    int temp = sortList[j];
+                    sortList[j] = sortList[j+1];
+                    sortList[j+1] = temp;
+                }//if   
     }//bubbleSort
         
+    void printArray(int sortList[])
+    {
+        int n = sortList.length;
+        for (int i = 0; i<n; ++i)
+            System.out.println(sortList[i] + " ");
+        System.out.println();
+    }//printArray
     
-    //heapSort Method
-    heapSort(int[] arrToSort){
-        
-        
-        
-        return sortedValue2;
-    }//heapSort
     
     public static void main(String[] args) {
+        Sorter bs = new Sorter();
         int sortList[]= new int[20];
 
         sortList[0] = 27;
@@ -56,6 +62,10 @@ public class Sorter {
         sortList[17] = 37;
         sortList[18] = 91;
         sortList[19] = 70;
-    }
+        
+        bs.bubbleSort(sortList);
+        System.out.println("Bubble Sorted List");
+        bs.printArray(sortList);
+    }//main
     
 }//sorter
