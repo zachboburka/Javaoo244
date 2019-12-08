@@ -10,11 +10,6 @@ package Sort;
  * @author zachary.boburka
  */
 public class Sorter {
-    //return values
-    int[] sortedValue;
-    int[] sortedValue2;
-   
-    
     
     //bubbleSort Method
     void bubbleSort(int[] sortList){
@@ -36,6 +31,17 @@ public class Sorter {
             System.out.println(sortList[i] + " ");
         System.out.println();
     }//printArray
+    
+    public static boolean checkSort(int sortList[]){
+        for(int i = 1; i < sortList.length; i++){
+            if(sortList[i - 1] > sortList[i]){
+                System.out.println("Not Sorted Correctly");
+                return false;
+            }//if
+        }//for
+        System.out.println("Sorted Correctly");
+        return true;
+    }//checkSort
     
     
     public static void main(String[] args) {
@@ -60,12 +66,13 @@ public class Sorter {
         sortList[15] = 30;
         sortList[16] = 7;
         sortList[17] = 37;
-        sortList[18] = 91;
+        sortList[18] = 95;
         sortList[19] = 70;
         
         bs.bubbleSort(sortList);
         System.out.println("Bubble Sorted List");
         bs.printArray(sortList);
+        checkSort(sortList);
     }//main
     
 }//sorter
