@@ -5,11 +5,14 @@
  */
 package Sort;
 
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
 /**
  *
  * @author zachary.boburka
  */
-public class Sorter {
+public class Sorter{
     
     //bubbleSort Method
     void bubbleSort(int[] sortList){
@@ -24,6 +27,7 @@ public class Sorter {
                 }//if   
     }//bubbleSort
         
+    //print array
     void printArray(int sortList[])
     {
         int n = sortList.length;
@@ -32,6 +36,7 @@ public class Sorter {
         System.out.println();
     }//printArray
     
+    //check if array is sorted
     public static boolean checkSort(int sortList[]){
         for(int i = 1; i < sortList.length; i++){
             if(sortList[i - 1] > sortList[i]){
@@ -43,10 +48,19 @@ public class Sorter {
         return true;
     }//checkSort
     
+    //measure execution time
+    public static void measureTime(){
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
     
     public static void main(String[] args) {
         Sorter bs = new Sorter();
-        int sortList[]= new int[20];
+        int sortList[]= new int[25];
 
         sortList[0] = 27;
         sortList[1] = 4;
@@ -68,11 +82,30 @@ public class Sorter {
         sortList[17] = 37;
         sortList[18] = 95;
         sortList[19] = 70;
+        sortList[20] = 99;
+        sortList[21] = 1;
+        sortList[22] = 9;
+        sortList[23] = 8;
+        sortList[24] = 39;
         
         bs.bubbleSort(sortList);
+        
+        //print sorted arry
         System.out.println("Bubble Sorted List");
-        bs.printArray(sortList);
+        System.out.println(Arrays.toString(sortList));
+        
+        //Measure execution time in milliseconds
+        long startTime = System.currentTimeMillis();
+        measureTime();
+        long endTime = System.currentTimeMillis();
+        long timeElapsed = (endTime - startTime);
+        
+        //print execution time
+        System.out.println("Execution Time : " + timeElapsed + " milliseconds");
+        
+        //check if array is sorted correctly
         checkSort(sortList);
+        
     }//main
     
 }//sorter
