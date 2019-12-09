@@ -40,16 +40,6 @@ public class SortLand {
         return true;
     }//checkSort
     
-    //measure execution time
-    public static void measureTime(){
-        
-        try {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    
     public void sort(int[] sortList) {
         int size = sortList.length;
         for (int i = size / 2 - 1; i >= 0; i--) {
@@ -95,13 +85,12 @@ public class SortLand {
     public static void runBubbleSort(int sortList[]){
         
         //Measure execution time in milliseconds
-        long startTime = System.currentTimeMillis();
-        measureTime();
-        long endTime = System.currentTimeMillis();
-        long timeElapsed = (endTime - startTime);
+        long startTime = System.currentTimeMillis();        
         Sorter bs = new Sorter();
         //Sort Array With Bubble Sort
         bs.bubbleSort(sortList);
+        long endTime = System.currentTimeMillis();
+        long timeElapsed = (endTime - startTime);
         
         //Print Bubble Sorted List
         System.out.println("Bubble Sorted List");
@@ -121,14 +110,13 @@ public class SortLand {
     public static void runHeapSort(int sortList[]){
         
         //Measure execution time in milliseconds
-        long startTime = System.currentTimeMillis();
-        measureTime();
-        long endTime = System.currentTimeMillis();
-        long timeElapsed = (endTime - startTime);
+        long startTime = System.currentTimeMillis();        
         
         //Sort Array With Heap Sort
         heapSorter hs = new heapSorter();
         hs.sort(sortList);
+        long endTime = System.currentTimeMillis();
+        long timeElapsed = (endTime - startTime);
         
         //Print Heap Sorted List
         System.out.println("Heap sort list");
