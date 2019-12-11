@@ -90,11 +90,10 @@ public class SortLand {
         long timeElapsed = (endTime - startTime);
 
         //Print Bubble Sorted List
-        /*
+        
         System.out.println("Bubble Sorted List");
-        System.out.println(Arrays.toString(sortList));
         System.out.println(" ");
-        */
+        
         
         //print bubble sort execution time
         System.out.println("Bubble Sort Execution Time : " + timeElapsed + " milliseconds");
@@ -118,11 +117,10 @@ public class SortLand {
         long timeElapsed = (endTime - startTime);
 
         //Print Heap Sorted List
-        /*
+        
         System.out.println("Heap sort list");
-        System.out.println(Arrays.toString(sortList));
         System.out.println(" ");
-        */
+        
         //print heap execution time
         System.out.println("Heap Sort Execution Time : " + timeElapsed + " milliseconds");
         System.out.println(" ");
@@ -135,13 +133,14 @@ public class SortLand {
 
     public static void main(String[] args) {
         //create array
-        int[] sortList = new int[100000000];
+        int[] sortList = new int[100000];
         for (int a = 0; a < sortList.length; a++) {
             sortList[a] = (a + 1) * 10;
         }
 
         //runBubbleSort(sortList);
         runHeapSort(sortList);
+        runBubbleSort(sortList);
 
     }
 }
