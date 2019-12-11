@@ -134,39 +134,7 @@ public class SortLand {
     }
 
     public static void main(String[] args) {
-        /*
-        
-        
-        int sortList[] = new int[25];
-
         //create array
-        sortList[0] = 27;
-        sortList[1] = 4;
-        sortList[2] = 34;
-        sortList[3] = 89;
-        sortList[4] = 65;
-        sortList[5] = 28;
-        sortList[6] = 5;
-        sortList[7] = 35;
-        sortList[8] = 90;
-        sortList[9] = 66;
-        sortList[10] = 29;
-        sortList[11] = 6;
-        sortList[12] = 36;
-        sortList[13] = 91;
-        sortList[14] = 68;
-        sortList[15] = 30;
-        sortList[16] = 7;
-        sortList[17] = 37;
-        sortList[18] = 95;
-        sortList[19] = 70;
-        sortList[20] = 99;
-        sortList[21] = 1;
-        sortList[22] = 9;
-        sortList[23] = 8;
-        sortList[24] = 39;
-         */
-
         int[] sortList = new int[100000000];
         for (int a = 0; a < sortList.length; a++) {
             sortList[a] = (a + 1) * 10;
