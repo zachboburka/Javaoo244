@@ -13,25 +13,25 @@ import java.util.concurrent.TimeUnit;
  * @author zachboburka
  */
 public class SortLand {
-    
+
     //bubbleSort Method
-    void bubbleSort(int[] sortList){
+    void bubbleSort(int[] sortList) {
         int n = sortList.length;
-        for  (int i = 0; i < n-1; i++)
-            for (int j = 0; j < n-i-1; j++)
-                if (sortList[j] > sortList[j+1])
-                {
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (sortList[j] > sortList[j + 1]) {
                     int temp = sortList[j];
-                    sortList[j] = sortList[j+1];
-                    sortList[j+1] = temp;
+                    sortList[j] = sortList[j + 1];
+                    sortList[j + 1] = temp;
                 }//if   
+            }
+        }
     }//bubbleSort
-    
-    
+
     //check if array is sorted
-    public static boolean checkSort(int sortList[]){
-        for(int i = 1; i < sortList.length; i++){
-            if(sortList[i - 1] > sortList[i]){
+    public static boolean checkSort(int sortList[]) {
+        for (int i = 1; i < sortList.length; i++) {
+            if (sortList[i - 1] > sortList[i]) {
                 System.out.println("Not Sorted Correctly");
                 return false;
             }//if
@@ -39,7 +39,7 @@ public class SortLand {
         System.out.println("Sorted Correctly");
         return true;
     }//checkSort
-    
+
     public void sort(int[] sortList) {
         int size = sortList.length;
         for (int i = size / 2 - 1; i >= 0; i--) {
@@ -52,91 +52,91 @@ public class SortLand {
             heapify(sortList, i, 0);
         }//for
     }//sort
-    
+
     void heapify(int[] sortList, int heapSize, int i) {
-        
+
         int largest = i; // Initialize largest as root
         int leftTree = 2 * i + 1; // left = 2*i + 1
         int rightTree = 2 * i + 2; // right = 2*i + 2
-        
-        
+
         // If left tree is larger than root
         if (leftTree < heapSize && sortList[leftTree] > sortList[largest]) {
             largest = leftTree;
         }//if
-        
-        
+
         // If right tree is larger than largest so far
         if (rightTree < heapSize && sortList[rightTree] > sortList[largest]) {
             largest = rightTree;
         }//if
-        
-        
+
         // If largest is not root
         if (largest != i) {
             int swap = sortList[i];
             sortList[i] = sortList[largest];
             sortList[largest] = swap;
-        // Recursive call to  heapify the sub-tree
+            // Recursive call to  heapify the sub-tree
             heapify(sortList, heapSize, largest);
         }//if
     }//heapify
-    
-    public static void runBubbleSort(int sortList[]){
-        
+
+    public static void runBubbleSort(int sortList[]) {
+
         //Measure execution time in milliseconds
-        long startTime = System.currentTimeMillis();        
+        long startTime = System.currentTimeMillis();
         Sorter bs = new Sorter();
         //Sort Array With Bubble Sort
         bs.bubbleSort(sortList);
         long endTime = System.currentTimeMillis();
         long timeElapsed = (endTime - startTime);
-        
+
         //Print Bubble Sorted List
+        /*
         System.out.println("Bubble Sorted List");
         System.out.println(Arrays.toString(sortList));
         System.out.println(" ");
+        */
         
         //print bubble sort execution time
         System.out.println("Bubble Sort Execution Time : " + timeElapsed + " milliseconds");
         System.out.println(" ");
-        
+
         //check if sort is correct
         checkSort(sortList);
         System.out.println(" ");
         System.out.println(" ");
     }
-    
-    public static void runHeapSort(int sortList[]){
-        
+
+    public static void runHeapSort(int sortList[]) {
+
         //Measure execution time in milliseconds
-        long startTime = System.currentTimeMillis();        
-        
+        long startTime = System.currentTimeMillis();
+
         //Sort Array With Heap Sort
         heapSorter hs = new heapSorter();
         hs.sort(sortList);
         long endTime = System.currentTimeMillis();
         long timeElapsed = (endTime - startTime);
-        
+
         //Print Heap Sorted List
+        /*
         System.out.println("Heap sort list");
         System.out.println(Arrays.toString(sortList));
         System.out.println(" ");
-        
-        
+        */
         //print heap execution time
         System.out.println("Heap Sort Execution Time : " + timeElapsed + " milliseconds");
         System.out.println(" ");
-        
-        
+
         //check if sort is correct
         checkSort(sortList);
         System.out.println(" ");
         System.out.println(" ");
     }
-    
-    
+
     public static void main(String[] args) {
+        /*
+        
+        
         int sortList[] = new int[25];
 
         //create array
@@ -165,9 +165,15 @@ public class SortLand {
         sortList[22] = 9;
         sortList[23] = 8;
         sortList[24] = 39;
-        
-        runBubbleSort(sortList);
+         */
+
+        int[] sortList = new int[100000000];
+        for (int a = 0; a < sortList.length; a++) {
+            sortList[a] = (a + 1) * 10;
+        }
+
+        //runBubbleSort(sortList);
         runHeapSort(sortList);
-        
+
     }
 }
